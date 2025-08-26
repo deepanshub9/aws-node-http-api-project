@@ -1,7 +1,7 @@
 org: trainwithdeepanshu
 app: aws-node-http-api-project
 service: aws-node-http-api-project
-frameworkVersion: '3'
+frameworkVersion: "3"
 
 provider:
   name: aws
