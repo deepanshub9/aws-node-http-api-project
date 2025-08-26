@@ -1,10 +1,12 @@
 "use strict";
 const { v4 } = require("uuid");
-const AWS = require("aws-sdk");
+const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
+const { DynamoDBDocumentClient, PutCommand } = require("@aws-sdk/lib-dynamodb");
 
 const kaamBharo = async (event) => {
 
-  const dynamoDb = new AWS.DynamoDB.DocumentClient();
+  const client = new DynamoDBClient({});
+  const dynamoDb = DynamoDBDocumentClient.from(client);
 
   const { kaam } = JSON.parse(event.body);
   const createdAt = new Date().toISOString();
@@ -15,10 +17,10 @@ const kaamBharo = async (event) => {
     createdAt,
     completed: false
   }
-  await dynamoDb.put({
+  await dynamoDb.send(new PutCommand({
     TableName: "KaamKaro",
     Item: newKaam
-  }).promise();
+  }));
 
   return {
     statusCode: 200,

@@ -1,20 +1,22 @@
 "use strict";
-const AWS = require("aws-sdk");
+const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
+const { DynamoDBDocumentClient, UpdateCommand } = require("@aws-sdk/lib-dynamodb");
 
 const kaamKhatamkaro = async (event) => {
 
-  const dynamoDb = new AWS.DynamoDB.DocumentClient();
+  const client = new DynamoDBClient({});
+  const dynamoDb = DynamoDBDocumentClient.from(client);
 
   const { completed } = JSON.parse(event.body);
   const { id } = event.pathParameters;
 
-  await dynamoDb.update({
+  await dynamoDb.send(new UpdateCommand({
     TableName: "KaamKaro",
     Key: { id },
     UpdateExpression: "set completed = :completed",
     ExpressionAttributeValues: {":completed": completed},
     ReturnValues: "ALL_NEW"
-  }).promise();
+  }));
 
   return {
     statusCode: 200,

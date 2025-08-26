@@ -1,16 +1,17 @@
 "use strict";
-const { v4 } = require("uuid");
-const AWS = require("aws-sdk");
+const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
+const { DynamoDBDocumentClient, ScanCommand } = require("@aws-sdk/lib-dynamodb");
 
 const kaamDikhao = async (event) => {
 
-  const dynamoDb = new AWS.DynamoDB.DocumentClient();
+  const client = new DynamoDBClient({});
+  const dynamoDb = DynamoDBDocumentClient.from(client);
   let kaam;
 
   try{
-  const result = await dynamoDb.scan({
+  const result = await dynamoDb.send(new ScanCommand({
     TableName: "KaamKaro"
-  }).promise();
+  }));
   kaam = result.Items;
   }catch(err){
     console.log(err);
